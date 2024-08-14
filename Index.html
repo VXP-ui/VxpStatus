@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VXP DATABASE RAM - Script Status Dashboard</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: #fff;
+    }
+
+    header {
+      padding: 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .script-status {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 2rem;
+      margin: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .status {
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .running {
+      background-color: #4CAF50;
+    }
+
+    .stopped {
+      background-color: #f44336;
+    }
+
+    .btn {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: #fff;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 2rem;
+      font-size: 1rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #3e8e41;
+    }
+
+    .message {
+      background-color: rgba(255, 0, 0, 0.5);
+      color: #fff;
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>VXP NETWORKS</h1>
+    <p>Script Status Dashboard</p>
+  </header>
+
+  <div class="script-status">
+    <h2>Database Backup Script</h2>
+    <p>Status: <span id="database-status" class="status running">Running</span></p>
+    <p>Last Execution: <span id="database-last-execution">2023-08-13 18:30:00</span></p>
+    <p>Next Scheduled Run: 2023-08-14 00:00:00</p>
+    <button class="btn" onclick="checkDatabaseBackup()">Check Database Backup</button>
+  </div>
+
+  <div class="script-status">
+    <h2>Website Analytics Sync</h2>
+    <p>Status: <span id="analytics-status" class="status stopped">Stopped</span></p>
+    <p>Last Execution: <span id="analytics-last-execution">2023-08-12 12:00:00</span></p>
+    <p>Next Scheduled Run: 2023-08-14 12:00:00</p>
+    <button class="btn" onclick="checkWebsiteAnalytics()">Check Website</button>
+  </div>
+
+  <script>
+    let databaseClickCount = 0;
+    let analyticsClickCount = 0;
+
+    function checkDatabaseBackup() {
+      databaseClickCount++;
+      if (databaseClickCount > 8) {
+        showMessage("Whoa there, slow down! Let's not overload the system.");
+        return;
+      }
+
+      // Update the last execution time and status
+      document.getElementById('database-last-execution').textContent = formatDate(new Date());
+      document.getElementById('database-status').textContent = 'Running';
+      document.getElementById('database-status').classList.remove('stopped');
+      document.getElementById('database-status').classList.add('running');
+    }
+
+    function checkWebsiteAnalytics() {
+      analyticsClickCount++;
+      if (analyticsClickCount > 8) {
+        showMessage("Take it easy! The system needs a break.");
+        return;
+      }
+
+      // Update the last execution time and status
+      document.getElementById('analytics-last-execution').textContent = formatDate(new Date());
+      document.getElementById('analytics-status').textContent = 'Running';
+      document.getElementById('analytics-status').classList.remove('stopped');
+      document.getElementById('analytics-status').classList.add('running');
+
+      // Randomly set the status to stopped after 5 seconds
+      setTimeout(() => {
+        document.getElementById('analytics-status').textContent = 'Stopped';
+        document.getElementById('analytics-status').classList.remove('running');
+        document.getElementById('analytics-status').classList.add('stopped');
+      }, 5000);
+    }
+
+    function formatDate(date) {
+      return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`;
+    }
+
+    function showMessage(message) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+      messageElement.textContent = message;
+      document.body.appendChild(messageElement);
+
+      setTimeout(() => {
+        messageElement.remove();
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
