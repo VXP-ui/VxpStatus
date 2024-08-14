@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VXP DATABASE</title>
+  <style>
+    /* Futuristic CSS styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #121212;
+      color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 50px 20px;
+    }
+
+    .card {
+      background-color: #1f1f1f;
+      border-radius: 16px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .card h2 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-top: 0;
+      margin-bottom: 15px;
+    }
+
+    .status {
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 14px;
+    }
+
+    .running {
+      color: #4caf50;
+    }
+
+    .stopped {
+      color: #f44336;
+    }
+
+    .btn {
+      background-color: #0077b6;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      font-size: 16px;
+      font-family: 'Roboto', sans-serif;
+      cursor: pointer;
+      border-radius: 12px;
+      transition: background-color 0.3s;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background-color: #005b8f;
+    }
+
+    #message-text {
+      font-size: 16px;
+      margin-top: 20px;
+      color: #9e9e9e;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .info-row p {
+      margin: 0;
+    }
+
+    .launch-time-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .launch-time-row {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      margin-bottom: 5px;
+    }
+
+    .launch-time-row p {
+      margin: 0;
+    }
+
+    .launch-time-label {
+      font-weight: 500;
+    }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h2>VXP Gateway</h2>
+      <div class="info-row">
+        <p>Status:</p>
+        <p id="vpn-status" class="status running">Running</p>
+      </div>
+      <div class="info-row">
+        <p>Last Checked:</p>
+        <p id="vpn-last-check">2024-08-14 18:30:00</p>
+      </div>
+      <button class="btn" onclick="checkVPNGateway(event)">Check VXP Gateway</button>
+    </div>
+
+    <div class="card">
+      <h2>Launch time</h2>
+      <div class="launch-time-container">
+        <div class="launch-time-row">
+          <p class="launch-time-label">Status:</p>
+          <p id="script-status" class="status stopped">Stopped</p>
+        </div>
+        <div class="launch-time-row">
+          <p class="launch-time-label">Last Checked:</p>
+          <p id="script-last-check">2024-08-14 12:00:00</p>
+        </div>
+        <div class="launch-time-row">
+          <p class="launch-time-label">Last Scheduled:</p>
+          <p id="script-last-scheduled">2024-08-15 09:00:00</p>
+        </div>
+      </div>
+      <button class="btn" onclick="checkScriptHealth(event)">Check Launch</button>
+    </div>
+
+    <div class="card">
+      <p id="message-text"></p>
+    </div>
+  </div>
+
+  <script>
+    let vpnClickCount = 0;
+    let scriptClickCount = 0;
+    let cooldownActive = false;
+
+    function checkVPNGateway(event) {
+      // (existing VPNGateway check function)
+    }
+
+    function checkScriptHealth(event) {
+      if (cooldownActive) {
+        showMessage("Please wait a moment before trying again.");
+        return;
+      }
+
+      scriptClickCount++;
+      if (scriptClickCount > 8) {
+        showMessage("Slow down! The system needs a break.");
+        return;
+      }
+
+      // Update the last check time and status
+      document.getElementById('script-last-check').textContent = formatDate(new Date());
+      document.getElementById('script-status').textContent = 'Running';
+      document.getElementById('script-status').classList.remove('stopped');
+      document.getElementById('script-status').classList.add('running');
+
+      // Randomly set the status to stopped after 5 seconds
+      setTimeout(() => {
+        document.getElementById('script-status').textContent = 'Stopped';
+        document.getElementById('script-status').classList.remove('running');
+        document.getElementById('script-status').classList.add('stopped');
+      }, 5000);
+
+      // Play the "ding" sound effect
+      playDingSound();
+
+      // Activate the cooldown
+      cooldownActive = true;
+      setTimeout(() => {
+        cooldownActive = false;
+      }, 10000);
+    }
+
+    function formatDate(date) {
+      // Date formatting code
+      return date.toLocaleString();
+    }
+
+    function showMessage(message) {
+      document.getElementById('message-text').textContent = message;
+    }
+
+    function playDingSound() {
+      // (existing playDingSound function)
+    }
+  </script>
+</body>
+</html>
